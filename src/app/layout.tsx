@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     title: "Jireh Hesite — Real Estate & Insurance",
     description:
       "Own more. Protect more. Worry less. Real estate, land, and insurance services based in Arayat, Pampanga.",
+    url: "https://jireh.techcareit.net",
     type: "website",
     images: [{ url: "/jiji.JPG", width: 1200, height: 630 }],
   },
