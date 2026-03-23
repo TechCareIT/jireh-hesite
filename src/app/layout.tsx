@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Sora, Outfit } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const sora = Sora({
@@ -40,7 +41,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${sora.variable} ${outfit.variable} antialiased`}>
-      <body className="min-h-screen overflow-x-hidden">{children}</body>
+      <body className="min-h-screen overflow-x-hidden">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
