@@ -3,10 +3,42 @@
 import { useState } from "react";
 
 const services = [
-  { id: "home", label: "Home / Rent-to-Own", icon: "🏠" },
-  { id: "land", label: "Land Acquisition", icon: "🗺️" },
-  { id: "insurance", label: "Life & Health Insurance", icon: "🛡️" },
-  { id: "protection", label: "Accident & Protection", icon: "❤️" },
+  {
+    id: "home",
+    label: "Home / Rent-to-Own",
+    icon: "🏠",
+    response: "Looking for a home? I got you.",
+    namePrompt: "Let me help you find the right place. What's your name?",
+    phonePrompt: "I might have some listings that fit your budget",
+    wrapUp: "I'll reach out with options that match what you're looking for",
+  },
+  {
+    id: "land",
+    label: "Land Acquisition",
+    icon: "🗺️",
+    response: "Investing in land — smart move.",
+    namePrompt: "Let me walk you through what's available. What's your name?",
+    phonePrompt: "I have lots ranging from small cuts to hectares",
+    wrapUp: "I'll send you details on available properties in your area",
+  },
+  {
+    id: "insurance",
+    label: "Life & Health Insurance",
+    icon: "🛡️",
+    response: "Securing your future — great decision.",
+    namePrompt: "I'll help you find the right coverage. What's your name?",
+    phonePrompt: "I can show you plans that fit your budget and goals",
+    wrapUp: "I'll prepare some options tailored to your situation",
+  },
+  {
+    id: "protection",
+    label: "Accident & Protection",
+    icon: "❤️",
+    response: "Better safe than sorry — I agree.",
+    namePrompt: "Let me show you how affordable protection can be. What's your name?",
+    phonePrompt: "I have flexible plans that won't break the bank",
+    wrapUp: "I'll walk you through the best protection plans available",
+  },
 ];
 
 type FormData = {
@@ -27,9 +59,17 @@ export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
 
   const totalSteps = 4;
+  const selected = services.find((s) => s.id === data.service);
+  const firstName = data.name.trim().split(" ")[0];
 
   const next = () => setStep((s) => Math.min(s + 1, totalSteps));
   const back = () => setStep((s) => Math.max(s - 1, 0));
+
+  const reset = () => {
+    setStep(0);
+    setData({ service: "", name: "", phone: "", message: "" });
+    setSubmitted(false);
+  };
 
   const handleSubmit = () => {
     // TODO: Wire to Formspree / Supabase / Google Sheet
@@ -51,12 +91,13 @@ export default function ContactForm() {
           ✓
         </div>
         <h3 className="font-display text-xl font-bold text-text sm:text-2xl">
-          Salamat!
+          Salamat, {firstName}!
         </h3>
-        <p className="mt-2 font-body text-sm text-text-muted">
-          I&apos;ll get back to you as soon as possible, {data.name.split(" ")[0]}.
+        <p className="mt-2 max-w-xs font-body text-sm text-text-muted">
+          {selected?.wrapUp}. I&apos;ll call or message you at{" "}
+          <span className="text-text">{data.phone}</span> soon.
         </p>
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <a
             href="tel:+639275671795"
             className="flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-display text-sm font-semibold text-dark active:scale-[0.97]"
@@ -64,16 +105,14 @@ export default function ContactForm() {
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
             </svg>
-            Call me instead
+            Can&apos;t wait? Call me
           </a>
-          <a
-            href="https://m.me/61576438250109"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-full border border-border-light px-6 py-3 font-display text-sm font-medium text-text active:scale-[0.97]"
+          <button
+            onClick={reset}
+            className="flex items-center justify-center gap-2 rounded-full border border-border-light px-6 py-3 font-display text-sm font-medium text-text-muted active:scale-[0.97]"
           >
-            Message
-          </a>
+            Submit another inquiry
+          </button>
         </div>
       </div>
     );
@@ -94,7 +133,7 @@ export default function ContactForm() {
       </div>
 
       {/* Steps container */}
-      <div className="relative min-h-[220px]">
+      <div className="relative min-h-[240px]">
         {/* Step 0: Service selection */}
         <div
           className={`transition-all duration-400 ${
@@ -115,7 +154,6 @@ export default function ContactForm() {
                 key={s.id}
                 onClick={() => {
                   setData({ ...data, service: s.id });
-                  // Auto-advance after selection
                   setTimeout(() => setStep(1), 300);
                 }}
                 className={`flex items-center gap-2.5 rounded-xl border px-4 py-3.5 text-left transition-all active:scale-[0.97] ${
@@ -141,11 +179,11 @@ export default function ContactForm() {
               : "absolute inset-0 opacity-0 pointer-events-none -translate-x-8"
           }`}
         >
-          <p className="mb-1 font-display text-lg font-bold text-text sm:text-xl">
-            What&apos;s your name?
+          <p className="mb-1 font-body text-sm text-accent">
+            {selected?.response}
           </p>
-          <p className="mb-5 font-body text-[13px] text-text-muted">
-            So I know who I&apos;m talking to.
+          <p className="mb-5 font-display text-lg font-bold text-text sm:text-xl">
+            {selected?.namePrompt}
           </p>
           <input
             type="text"
@@ -154,7 +192,6 @@ export default function ContactForm() {
             onKeyDown={(e) => e.key === "Enter" && canProceed() && next()}
             placeholder="e.g. Juan Dela Cruz"
             className="w-full rounded-xl border border-border bg-surface/50 px-4 py-4 font-body text-base text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
-            autoFocus={step === 1}
             style={{ fontSize: "16px" }}
           />
         </div>
@@ -169,11 +206,14 @@ export default function ContactForm() {
               : "absolute inset-0 opacity-0 pointer-events-none -translate-x-8"
           }`}
         >
-          <p className="mb-1 font-display text-lg font-bold text-text sm:text-xl">
+          <p className="mb-1 font-body text-sm text-accent">
+            Nice to meet you, {firstName}!
+          </p>
+          <p className="mb-2 font-display text-lg font-bold text-text sm:text-xl">
             Best number to reach you?
           </p>
           <p className="mb-5 font-body text-[13px] text-text-muted">
-            I&apos;ll call or text — whichever you prefer.
+            {selected?.phonePrompt} — I&apos;ll call or text you.
           </p>
           <input
             type="tel"
@@ -182,7 +222,6 @@ export default function ContactForm() {
             onKeyDown={(e) => e.key === "Enter" && canProceed() && next()}
             placeholder="09XX XXX XXXX"
             className="w-full rounded-xl border border-border bg-surface/50 px-4 py-4 font-body text-base text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
-            autoFocus={step === 2}
             style={{ fontSize: "16px" }}
           />
         </div>
@@ -197,8 +236,11 @@ export default function ContactForm() {
               : "absolute inset-0 opacity-0 pointer-events-none -translate-x-8"
           }`}
         >
-          <p className="mb-1 font-display text-lg font-bold text-text sm:text-xl">
-            Anything else?
+          <p className="mb-1 font-body text-sm text-accent">
+            Got it, {firstName}. I&apos;ll call you on that number.
+          </p>
+          <p className="mb-2 font-display text-lg font-bold text-text sm:text-xl">
+            Anything I should know before we wrap up?
           </p>
           <p className="mb-5 font-body text-[13px] text-text-muted">
             Optional — but helps me prepare for our conversation.
@@ -206,10 +248,9 @@ export default function ContactForm() {
           <textarea
             value={data.message}
             onChange={(e) => setData({ ...data, message: e.target.value })}
-            placeholder="e.g. Looking for a 2BR house in Pampanga..."
+            placeholder="e.g. Budget range, preferred location, timeline..."
             rows={3}
             className="w-full resize-none rounded-xl border border-border bg-surface/50 px-4 py-4 font-body text-base text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
-            autoFocus={step === 3}
             style={{ fontSize: "16px" }}
           />
         </div>
