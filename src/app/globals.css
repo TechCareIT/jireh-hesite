@@ -202,3 +202,15 @@ body {
 a, button {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* ── Copy protection ── */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
