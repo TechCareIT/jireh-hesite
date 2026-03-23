@@ -1,26 +1,204 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ── Design Tokens: Charcoal & Copper ── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-dark: #1A1A1A;
+  --color-surface: #222222;
+  --color-surface-2: #2A2A2A;
+  --color-border: #333333;
+  --color-border-light: #3D3D3D;
+  --color-text: #F7F4F0;
+  --color-text-muted: #A09890;
+  --color-text-dim: #6B6360;
+  --color-accent: #D4764E;
+  --color-accent-hover: #E08860;
+  --color-accent-dim: #D4764E26;
+  --color-accent-glow: #D4764E1A;
+  --font-display: var(--font-sora);
+  --font-body: var(--font-outfit);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-dark);
+  color: var(--color-text);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-dark);
+}
+
+/* ── Animations — faster on mobile ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-right {
+  animation: slide-in-right 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Tight delays on mobile, spaced on desktop */
+.delay-1 { animation-delay: 0.04s; }
+.delay-2 { animation-delay: 0.08s; }
+.delay-3 { animation-delay: 0.14s; }
+.delay-4 { animation-delay: 0.2s; }
+.delay-5 { animation-delay: 0.26s; }
+.delay-6 { animation-delay: 0.32s; }
+
+@media (min-width: 1024px) {
+  .delay-1 { animation-delay: 0.08s; }
+  .delay-2 { animation-delay: 0.16s; }
+  .delay-3 { animation-delay: 0.28s; }
+  .delay-4 { animation-delay: 0.4s; }
+  .delay-5 { animation-delay: 0.52s; }
+  .delay-6 { animation-delay: 0.64s; }
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  background: var(--color-accent);
+  color: var(--color-dark);
+  font-weight: 600;
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+  background-size: 250% 100%;
+  background-position: -100% 0;
+  transition: background-position 0.6s ease;
+}
+
+.btn-primary:hover::before {
+  background-position: 100% 0;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px var(--color-accent-dim);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-ghost {
+  border: 1.5px solid var(--color-border-light);
+  color: var(--color-text);
+  font-weight: 500;
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.btn-ghost:active {
+  transform: scale(0.97);
+}
+
+/* ── Service row hover (desktop only) ── */
+@media (min-width: 1024px) {
+  .service-row {
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .service-row:hover {
+    background: var(--color-accent-glow);
+    padding-left: 2rem;
+  }
+
+  .service-row:hover .service-number {
+    color: var(--color-accent);
+  }
+
+  .service-row:hover .service-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .service-row:hover .service-title {
+    color: var(--color-accent);
+  }
+}
+
+/* ── Grain overlay — disabled on mobile for performance ── */
+@media (min-width: 1024px) {
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 256px;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* ── Glow blob — disabled on mobile for performance ── */
+.glow-blob {
+  display: none;
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  opacity: 0.12;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .glow-blob { display: block; }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* ── Tap highlight removal globally ── */
+a, button {
+  -webkit-tap-highlight-color: transparent;
 }
